@@ -42,7 +42,7 @@ class CreatableSelect extends React.Component {
 	}
 
 	filterOptions (...params) {
-		const { filterOptions, isValidNewOption, options, promptTextCreator } = this.props;
+		const { filterOptions, isValidNewOption, options, promptTextCreator, showNewOptionAtTop } = this.props;
 
 		// TRICKY Check currently selected options as well.
 		// Don't display a create-prompt for a value that's selected.
@@ -76,7 +76,11 @@ class CreatableSelect extends React.Component {
 					valueKey: this.valueKey
 				});
 
-				filteredOptions.unshift(this._createPlaceholderOption);
+				if (showNewOptionAtTop) {
+					filteredOptions.unshift(this._createPlaceholderOption);
+				} else {
+					filteredOptions.push(this._createPlaceholderOption);
+				}
 			}
 		}
 
@@ -247,7 +251,8 @@ CreatableSelect.defaultProps = {
 	menuRenderer: defaultMenuRenderer,
 	newOptionCreator,
 	promptTextCreator,
-	shouldKeyDownEventCreateNewOption
+  showNewOptionAtTop: true,
+  shouldKeyDownEventCreateNewOption
 };
 
 CreatableSelect.propTypes = {
@@ -293,6 +298,11 @@ CreatableSelect.propTypes = {
 
 	// Decides if a keyDown event (eg its `keyCode`) should result in the creation of a new option.
 	shouldKeyDownEventCreateNewOption: PropTypes.func,
+
+  // Creates prompt/placeholder option text.
+  // true: new option prompt at top of list (default)
+  // false: new option prompt at bottom of list
+  showNewOptionAtTop: PropTypes.bool
 };
 
 
