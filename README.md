@@ -216,6 +216,19 @@ function render (selectProps) {
 };
 ```
 
+##### Creatable properties
+
+| Property | Type | Description
+:---|:---|:---
+| `alwaysShowNewOptionItem` | bool | Whether to always show the new option item (regardless of whether the user has input anything). By default this is false. This will only take effect if `onNewOptionClick` is provided, as the default behavior would add the item immediately, which would be blank without input. |
+| `children` | function | Child function responsible for creating the inner Select component. This component can be used to compose HOCs (eg Creatable and Async). Expected signature: `(props: Object): PropTypes.element` |
+| `isOptionUnique` | function | Searches for any matching option within the set of options. This function prevents duplicate options from being created. By default this is a basic, case-sensitive comparison of label and value. Expected signature: `({ option: Object, options: Array, labelKey: string, valueKey: string }): boolean` |
+| `isValidNewOption` | function | Determines if the current input text represents a valid option. By default any non-empty string will be considered valid. Expected signature: `({ label: string }): boolean` |
+| `newOptionCreator` | function | Factory to create new option. Expected signature: `({ label: string, labelKey: string, valueKey: string }): Object` |
+| `onNewOptionClick` | function | new option click handler, it calls when new option has been selected. `function(option) {}` |
+| `shouldKeyDownEventCreateNewOption` | function | Decides if a keyDown event (eg its `keyCode`) should result in the creation of a new option. ENTER, TAB and comma keys create new options by default. Expected signature: `({ keyCode: number }): boolean` |
+| `promptTextCreator` | function | Factory for overriding default option creator prompt label. By default it will read 'Create option "{label}"'. Expected signature: `(label: String): String` |
+
 ### Combining Async and Creatable
 
 Use the `AsyncCreatable` HOC if you want both _async_ and _creatable_ functionality.
