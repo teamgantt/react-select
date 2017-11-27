@@ -2186,7 +2186,7 @@ var CreatableSelect = function (_React$Component) {
 			    options = _props$options === undefined ? [] : _props$options;
 
 
-			if (isValidNewOption({ label: this.inputValue })) {
+			if (isValidNewOption({ label: this.inputValue }) || onNewOptionClick) {
 				var option = newOptionCreator({ label: this.inputValue, labelKey: this.labelKey, valueKey: this.valueKey });
 				var _isOptionUnique = this.isOptionUnique({ option: option });
 
@@ -2206,9 +2206,12 @@ var CreatableSelect = function (_React$Component) {
 		key: 'filterOptions',
 		value: function filterOptions$$1() {
 			var _props2 = this.props,
+			    alwaysShowNewOptionItem = _props2.alwaysShowNewOptionItem,
 			    filterOptions$$1 = _props2.filterOptions,
 			    isValidNewOption = _props2.isValidNewOption,
-			    promptTextCreator = _props2.promptTextCreator;
+			    onNewOptionClick = _props2.onNewOptionClick,
+			    promptTextCreator = _props2.promptTextCreator,
+			    showNewOptionAtTop = _props2.showNewOptionAtTop;
 
 			// TRICKY Check currently selected options as well.
 			// Don't display a create-prompt for a value that's selected.
@@ -2218,12 +2221,12 @@ var CreatableSelect = function (_React$Component) {
 
 			var filteredOptions = filterOptions$$1.apply(undefined, arguments) || [];
 
-			if (isValidNewOption({ label: this.inputValue })) {
+			if (isValidNewOption({ label: this.inputValue }) || onNewOptionClick && alwaysShowNewOptionItem) {
 				var _newOptionCreator = this.props.newOptionCreator;
 
 
 				var option = _newOptionCreator({
-					label: this.inputValue,
+					label: this.inputValue || '',
 					labelKey: this.labelKey,
 					valueKey: this.valueKey
 				});
@@ -2236,7 +2239,7 @@ var CreatableSelect = function (_React$Component) {
 				});
 
 				if (_isOptionUnique2) {
-					var prompt = promptTextCreator(this.inputValue);
+					var prompt = promptTextCreator(this.inputValue || '');
 
 					this._createPlaceholderOption = _newOptionCreator({
 						label: prompt,
@@ -2244,7 +2247,11 @@ var CreatableSelect = function (_React$Component) {
 						valueKey: this.valueKey
 					});
 
-					filteredOptions.unshift(this._createPlaceholderOption);
+					if (showNewOptionAtTop) {
+						filteredOptions.unshift(this._createPlaceholderOption);
+					} else {
+						filteredOptions.push(this._createPlaceholderOption);
+					}
 				}
 			}
 
@@ -2432,16 +2439,23 @@ CreatableSelect.promptTextCreator = promptTextCreator;
 CreatableSelect.shouldKeyDownEventCreateNewOption = shouldKeyDownEventCreateNewOption;
 
 CreatableSelect.defaultProps = {
+	alwaysShowNewOptionItem: false,
 	filterOptions: filterOptions,
 	isOptionUnique: isOptionUnique,
 	isValidNewOption: isValidNewOption,
 	menuRenderer: menuRenderer,
 	newOptionCreator: newOptionCreator,
 	promptTextCreator: promptTextCreator,
-	shouldKeyDownEventCreateNewOption: shouldKeyDownEventCreateNewOption
+	shouldKeyDownEventCreateNewOption: shouldKeyDownEventCreateNewOption,
+	showNewOptionAtTop: true
 };
 
 CreatableSelect.propTypes = {
+	// If there is a custom `onNewOptionClick` function, give the option
+	// to always show the new option creator for users to click before
+	// inputting anything.
+	alwaysShowNewOptionItem: PropTypes.bool,
+
 	// Child function responsible for creating the inner Select component
 	// This component can be used to compose HOCs (eg Creatable and Async)
 	// (props: Object): PropTypes.element
@@ -2485,7 +2499,12 @@ CreatableSelect.propTypes = {
 	ref: PropTypes.func,
 
 	// Decides if a keyDown event (eg its `keyCode`) should result in the creation of a new option.
-	shouldKeyDownEventCreateNewOption: PropTypes.func
+	shouldKeyDownEventCreateNewOption: PropTypes.func,
+
+	// Where to show prompt/placeholder option text.
+	// true: new option prompt at top of list (default)
+	// false: new option prompt at bottom of list
+	showNewOptionAtTop: React__default.PropTypes.bool
 };
 
 var AsyncCreatableSelect = function (_React$Component) {
