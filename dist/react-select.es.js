@@ -2499,7 +2499,7 @@ CreatableSelect.propTypes = {
 	// Where to show prompt/placeholder option text.
 	// true: new option prompt at top of list (default)
 	// false: new option prompt at bottom of list
-	showNewOptionAtTop: React.PropTypes.bool
+	showNewOptionAtTop: PropTypes.bool
 };
 
 var AsyncCreatableSelect = function (_React$Component) {
